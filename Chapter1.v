@@ -908,7 +908,7 @@ Qed.
 
 Theorem negation_fn_applied_twice :
   forall (f : bool -> bool),
-  (forall (x : bool), f x != x) ->
+  (forall (x : bool), f x = negb x) ->
   forall (b : bool), f (f b) = b.
 Proof.
   intros f.
@@ -916,11 +916,57 @@ Proof.
   intros b.
   destruct b.
   rewrite -> x.
+  rewrite -> x.
+  reflexivity.
+  rewrite -> x.
+  rewrite -> x.
+  reflexivity.
+Qed.
 
 (** **** Exercise: 2 stars (andb_eq_orb)  *)
 (** Prove the following theorem.  (You may want to first prove a
     subsidiary lemma or two. Alternatively, remember that you do
     not have to introduce all hypotheses at the same time.) *)
+
+Theorem or_true :
+  forall (b : bool),
+  orb true b = true.
+Proof.
+  intros b.
+  destruct b.
+  reflexivity.
+  reflexivity.
+Qed.
+
+Theorem and_false :
+  forall (b : bool),
+  andb false b = false.
+Proof.
+  intros b.
+  destruct b.
+  reflexivity.
+  reflexivity.
+Qed.
+
+Theorem and_is :
+  forall (b : bool),
+  andb true b = b.
+Proof.
+  intros b.
+  destruct b.
+  reflexivity.
+  reflexivity.
+Qed.
+
+Theorem or_is : 
+  forall (b : bool),
+  orb false b = b.
+Proof.
+  intro b.
+  destruct b.
+  reflexivity.
+  reflexivity.
+Qed.
 
 Theorem andb_eq_orb : 
   forall (b c : bool),
@@ -928,8 +974,21 @@ Theorem andb_eq_orb :
   b = c.
 Proof.
   intros b.
+  destruct b.
   intros c.
+  rewrite -> or_true.
+  rewrite -> and_is.
   intros H.
+  rewrite -> H.
+  reflexivity.
+  intros c.
+  rewrite -> and_false.
+  rewrite -> or_is.
+  intros H.
+  rewrite -> H.
+  reflexivity.
+Qed.
+
 Admitted.
 (** [] *)
 
@@ -969,8 +1028,7 @@ Admitted.
         then incrementing. 
 *)
 
-(* FILL IN HERE *)
-(** [] *)
+
 
 (* ###################################################################### *)
 (** * More on Notation (Advanced) *)
