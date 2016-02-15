@@ -459,9 +459,21 @@ Example test_subset2:              subset [1;2;2] [2;1;4;1] = false.
     you haven't learned yet.  Feel free to ask for help if you get
     stuck! *)
 
-(* FILL IN HERE *)
-(** [] *)
-
+Theorem add_head_count_incr : forall (b: bag),
+  count 0 (add 0 b) = S (count 0 b).
+Proof.
+ intros b. 
+ destruct b.
+ Case "empty list".
+   simpl. reflexivity.
+ Case "non-empty list".
+   induction n as [| n'].
+   SCase "0 case".
+     simpl. reflexivity.
+   SCase "n+1 case".
+     simpl. reflexivity.
+Qed.
+   
 (* ###################################################### *)
 (** * Reasoning About Lists *)
 
@@ -472,7 +484,7 @@ Example test_subset2:              subset [1;2;2] [2;1;4;1] = false.
 
 Theorem nil_app : forall l:natlist,
   [] ++ l = l.
-Proof. reflexivity. Qed.
+Proof. simpl. reflexivity. Qed.
 
 (** ... because the [[]] is substituted into the match position
     in the definition of [app], allowing the match itself to be
@@ -482,10 +494,12 @@ Proof. reflexivity. Qed.
     analysis on the possible shapes (empty or non-empty) of an unknown
     list. *)
 
+Print pred.
+
 Theorem tl_length_pred : forall l:natlist,
   pred (length l) = length (tl l).
 Proof.
-  intros l. destruct l as [| n l'].
+  intros l. destruct l.
   Case "l = nil".
     reflexivity.
   Case "l = cons n l'". 
@@ -747,7 +761,7 @@ Proof.
     present purposes. *)
 
 (* ###################################################### *)
-(** ** [SearchAbout] *)
+(** ** [Searchabout] *)
 
 (** We've seen that proofs can make use of other theorems we've
     already proved, using [rewrite], and later we will see other ways
@@ -780,14 +794,63 @@ Proof.
 Theorem app_nil_end : forall l : natlist, 
   l ++ [] = l.   
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros l. induction l as [|n l'].
+  Case "empty list".
+    reflexivity.
+  Case "non-empty list".
+    simpl. rewrite -> IHl'. reflexivity.
+Qed.
 
+Theorem snoc_append : forall (l:natlist) (v:nat),
+  snoc l v = l ++ (v :: nil).
+Proof.
+  intros l. induction l as [|n l'].
+  Case "empty list".
+    reflexivity.
+  Case "non-empty list".
+    simpl. 
+    intros v.
+    rewrite -> IHl'.
+    reflexivity.
+Qed.
+
+Theorem rev_assoc : forall (l:natlist) (v:nat),
+  rev l ++ [v] = rev (v :: l).
+Proof.
+  intros l. induction l as [|n l'].
+  Case "empty list".
+    reflexivity.
+  Case "non-empty list".
+    intros v.
+    simpl.
+    rewrite -> snoc_append.   
+    rewrite -> snoc_append.
+    reflexivity.  
+Qed.
+
+Theorem rev_snoc : forall (n:nat) (l:natlist),
+  rev (snoc l n)   = n :: (rev l).
+Proof.
+  intros n l.
+  induction l as [| n' l'].
+  reflexivity.
+  simpl.
+  rewrite -> IHl'.
+  reflexivity.
+Qed.
 
 Theorem rev_involutive : forall l : natlist,
   rev (rev l) = l.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
+    intros l.
+    induction l as [| n l'].
+    reflexivity.
+    simpl.
+    rewrite -> rev_snoc.
+    rewrite IHl'.
+    reflexivity.    
+Qed.
+    
 (** There is a short solution to the next exercise.  If you find
     yourself getting tangled up, step back and try to look for a
     simpler way. *)
@@ -795,13 +858,11 @@ Proof.
 Theorem app_assoc4 : forall l1 l2 l3 l4 : natlist,
   l1 ++ (l2 ++ (l3 ++ l4)) = ((l1 ++ l2) ++ l3) ++ l4.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
-Theorem snoc_append : forall (l:natlist) (n:nat),
-  snoc l n = l ++ [n].
-Proof.
-  (* FILL IN HERE *) Admitted.
-
+  intros l1 l2 l3 l4.
+  rewrite -> app_assoc.
+  rewrite -> app_assoc.
+  reflexivity.
+Qed.
 
 Theorem distr_rev : forall l1 l2 : natlist,
   rev (l1 ++ l2) = (rev l2) ++ (rev l1).
