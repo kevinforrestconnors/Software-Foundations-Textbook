@@ -410,7 +410,7 @@ Fixpoint remove_one (v:nat) (s:bag) : bag :=
   (* When remove_one is applied to a bag without the number to remove,
      it should return the same bag unchanged. *)
   match s with
-    | nil => nil
+    | nil  => nil
     | h::t => if beq_nat v h then t else h :: remove_one v t
   end.
                                           
@@ -426,7 +426,7 @@ Example test_remove_one4:         count 5 (remove_one 5 [2;1;5;4;5;1;4]) = 1.
 
 Fixpoint remove_all (v:nat) (s:bag) : bag :=
   match s with
-    | nil => nil
+    | nil  => nil
     | h::t => if beq_nat v h then remove_all v t else h :: remove_all v t
   end.
 
@@ -440,8 +440,11 @@ Example test_remove_all4:          count 5 (remove_all 5 [2;1;5;4;5;1;4;5;1;4]) 
   Proof. reflexivity. Qed.
 
 Fixpoint subset (s1:bag) (s2:bag) : bool :=
-  (* FILL IN HERE *) admit.
-
+  match s1 with
+  | nil  => true
+  | h::t => if ble_nat (count h s1) (count h s2) then andb true (subset t s2) else false
+  end.
+             
 Example test_subset1:              subset [1;2] [2;1;4;1] = true.
   Proof. reflexivity. Qed.
 Example test_subset2:              subset [1;2;2] [2;1;4;1] = false.
