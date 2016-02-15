@@ -408,7 +408,7 @@ Proof.
   intros a b. induction a as [| a'].
   Case "0 + 0 * b = 0 * (b + 1)".
     simpl. reflexivity.
-  Case "S a' + S a' * b = S a' * (b + 1)".
+  Case "S a' + S a' * b = S a' * (b + 1)". 
     simpl. rewrite <- IHa'.
     assert (H: b + 1 = 1 + b).
       SCase "plus1".
