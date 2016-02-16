@@ -953,9 +953,14 @@ Qed.
        involving [cons] ([::]), [snoc], and [app] ([++]).  
      - Prove it. *) 
 
-(* FILL IN HERE *)
-(** [] *)
-
+Theorem cons_snoc_app : forall (n:nat) (s:bag),
+  snoc (n :: s) n = (n :: s) ++ [n].
+Proof.
+  intros n s.
+  simpl.
+  rewrite -> snoc_append.
+  reflexivity.
+Qed.
 (** **** Exercise: 3 stars, advanced (bag_proofs)  *)
 (** Here are a couple of little theorems to prove about your
     definitions about bags earlier in the file. *)
