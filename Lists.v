@@ -867,37 +867,83 @@ Qed.
 Theorem distr_rev : forall l1 l2 : natlist,
   rev (l1 ++ l2) = (rev l2) ++ (rev l1).
 Proof.
-  (* FILL IN HERE *) Admitted.
-
+  intros l1 l2.
+  induction l1 as [|n l1'].
+  Case "l1 = []".
+    simpl. induction l2 as [|n' l2'].
+      SCase "l2 = []".
+        simpl. reflexivity.
+      SCase "l2 = (n' :: l2')".
+        simpl.
+        rewrite -> snoc_append.
+        rewrite -> app_assoc.
+        simpl.
+        reflexivity.
+  Case "l1 = (n :: l1')".
+    simpl.
+    rewrite -> snoc_append.
+    rewrite -> snoc_append.
+    rewrite <- app_assoc.
+    simpl.
+    rewrite -> IHl1'.
+    reflexivity.
+Qed.
 (** An exercise about your implementation of [nonzeros]: *)
 
 Lemma nonzeros_app : forall l1 l2 : natlist,
   nonzeros (l1 ++ l2) = (nonzeros l1) ++ (nonzeros l2).
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
+  intros l1 l2.
+  induction l1 as [|n l1']. reflexivity.
+  destruct n.
+  simpl.
+  rewrite -> IHl1'.
+  reflexivity.
+  simpl.
+  rewrite -> IHl1'.
+  reflexivity.
+Qed.
 (** **** Exercise: 2 stars (beq_natlist)  *)
 (** Fill in the definition of [beq_natlist], which compares
     lists of numbers for equality.  Prove that [beq_natlist l l]
     yields [true] for every list [l]. *)
 
 Fixpoint beq_natlist (l1 l2 : natlist) : bool :=
-  (* FILL IN HERE *) admit.
+  match l1, l2 with 
+  | nil, nil         => true
+  | nil, _           => false
+  | _, nil           => false
+  | (x::xs), (y::ys) => if beq_nat x y then andb true (beq_natlist xs ys) else false
+end.
 
 Example test_beq_natlist1 :   (beq_natlist nil nil = true).
- (* FILL IN HERE *) Admitted.
+ reflexivity. Qed.
 Example test_beq_natlist2 :   beq_natlist [1;2;3] [1;2;3] = true.
- (* FILL IN HERE *) Admitted.
+ reflexivity. Qed.
 Example test_beq_natlist3 :   beq_natlist [1;2;3] [1;2;4] = false.
- (* FILL IN HERE *) Admitted.
+ reflexivity. Qed.
+
+Theorem nat_refl : forall n,
+  beq_nat n n = true.
+Proof. 
+  intro n.
+  induction n. reflexivity.
+  simpl. rewrite -> IHn.
+  reflexivity. Qed.
 
 Theorem beq_natlist_refl : forall l:natlist,
   true = beq_natlist l l.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
+  intro l.
+  induction l as [|n l'].
+  Case "[] []".
+    reflexivity.
+  Case "(n :: l') == (n :: l')".
+    rewrite -> IHl'.
+    simpl.
+    rewrite -> nat_refl.
+    reflexivity.
+Qed.
 (* ###################################################### *)
 (** ** List Exercises, Part 2 *)
 
