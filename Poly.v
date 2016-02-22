@@ -400,12 +400,32 @@ Theorem rev_snoc : forall X : Type,
                      forall s : list X,
   rev (snoc s v) = v :: (rev s).
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros X v s.
+  induction s.
+  Case "snoc [] v".
+    simpl.
+    reflexivity.
+  Case "snoc (h::t) v".
+    simpl.
+    rewrite -> IHs.
+    simpl.
+    reflexivity.
+Qed.
 
 Theorem rev_involutive : forall X : Type, forall l : list X,
   rev (rev l) = l.
 Proof.
-(* FILL IN HERE *) Admitted.
+  intros X l.
+  induction l.
+  Case "rev []".
+    simpl.
+    reflexivity.
+  Case "rev (x :: l)".
+    simpl.
+    rewrite -> rev_snoc.
+    rewrite -> IHl.
+    reflexivity.
+Qed.
 
 Theorem snoc_with_append : forall X : Type,
                          forall l1 l2 : list X,
