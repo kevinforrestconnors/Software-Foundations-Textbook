@@ -501,6 +501,7 @@ Fixpoint combine {X Y : Type} (lx : list X) (ly : list Y)
   | (x::tx, y::ty) => (x,y) :: (combine tx ty)
   end.
 
+
 (** **** Exercise: 1 star, optional (combine_checks)  *)
 (** Try answering the following questions on paper and
     checking your answers in coq:
@@ -510,6 +511,10 @@ Fixpoint combine {X Y : Type} (lx : list X) (ly : list Y)
         Eval compute in (combine [1;2] [false;false;true;true]).
       print?   []
 *)
+Check combine.
+Check @combine.
+Check  combine [1;2] [false;false;true;true].
+Eval compute in (combine [1;2] [false;false;true;true]).
 
 (** **** Exercise: 2 stars (split)  *)
 (** The function [split] is the right inverse of combine: it takes a
@@ -522,12 +527,16 @@ Fixpoint combine {X Y : Type} (lx : list X) (ly : list Y)
 Fixpoint split
            {X Y : Type} (l : list (X*Y))
            : (list X) * (list Y) :=
-(* FILL IN HERE *) admit.
+  match l with
+  | []              => ([], [])  
+  | ((a,b) :: [])   => (a :: [], b :: [])
+  | ((a,b) :: tail) => ((a :: (fst (split tail))), (b :: (snd (split tail))))
+  end.
 
 Example test_split:
   split [(1,false);(2,false)] = ([1;2],[false;false]).
 Proof.
-(* FILL IN HERE *) Admitted.
+  simpl. reflexivity. Qed.
 (** [] *)
 
 (* ###################################################### *)
