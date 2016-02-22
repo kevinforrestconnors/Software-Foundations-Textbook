@@ -1,5 +1,6 @@
 (** * Lists: Working with Structured Data *)
 
+
 Require Export Induction.
 
 Module NatList. 
@@ -968,8 +969,10 @@ Qed.
 Theorem count_member_nonzero : forall (s : bag),
   ble_nat 1 (count 1 (1 :: s)) = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
+  intros s.
+  simpl.
+  reflexivity.
+Qed.
 (** The following lemma about [ble_nat] might help you in the next proof. *)
 
 Theorem ble_n_Sn : forall n,
@@ -979,13 +982,76 @@ Proof.
   Case "0".  
     simpl.  reflexivity.
   Case "S n'".
-    simpl.  rewrite IHn'.  reflexivity.  Qed.
+    simpl.  rewrite IHn'.  reflexivity.  Qed. 
+
+Theorem remove_assoc : forall (n:nat) (s:bag),
+  remove_one 0 (n::s) = if beq_nat n 0 then s else n :: (remove_one 0 s).
+Proof.
+  intros n s.
+  induction s as [|h' t'].
+  Case "[]".
+    destruct n.
+    SCase "n = 0".
+      simpl. reflexivity.
+    SCase "n = S n'".
+      simpl. reflexivity.
+  Case "(h' :: t')".
+    destruct n.
+    SCase "n = 0".
+      simpl. reflexivity.
+    SCase "n = S n'".
+      simpl. reflexivity.
+Qed.
+
+Theorem Count_ble : forall (n:nat) (s:bag),
+  ble_nat (count 0 (n::s)) (S (count 0 (n::s))) = true.
+Proof.
+  intros n s.
+  induction s as [|h t].
+  Case "[]".
+    destruct n.
+    SCase "n = 0".
+      simpl. reflexivity.
+    SCase "n = S n'".
+      simpl. reflexivity.
+  Case "(h' :: t')".
+    destruct n.
+    SCase "n = 0".
+      simpl.
+      destruct h.
+      simpl.
+      induction t.
+      reflexivity.
+      destruct n. 
+      simpl.
+      rewrite -> IHt0.
+      reflexivity.
+      induction t.
+      reflexivity.
+      Admitted.
+(*    SCase "n = S n'".
+      simpl. reflexivity.
+Qed. *)
 
 Theorem remove_decreases_count: forall (s : bag),
   ble_nat (count 0 (remove_one 0 s)) (count 0 s) = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intro s.
+  induction s as [|n l1'].
+  Case "[] []". 
+    simpl. 
+    reflexivity.
+  Case "(n :: s) (n :: s)".
+    rewrite -> remove_assoc.    
+    destruct n.
+    SCase "n = 0".
+      simpl.
+      induction l1' as [|h t].
+      simpl. reflexivity.
+      (*rewrite -> count_assoc.*)
+Admitted.
+      
+
 
 (** **** Exercise: 3 stars, optional (bag_count_sum)  *)  
 (** Write down an interesting theorem [bag_count_sum] about bags 
@@ -1086,16 +1152,19 @@ Definition option_elim (d : nat) (o : natoption) : nat :=
    have to pass a default element for the [nil] case.  *)
 
 Definition hd_opt (l : natlist) : natoption :=
-  (* FILL IN HERE *) admit.
+  match l with 
+  | nil    => None
+  | (h::t) => Some h
+  end.
 
 Example test_hd_opt1 : hd_opt [] = None.
- (* FILL IN HERE *) Admitted.
+ simpl. reflexivity. Qed.
 
 Example test_hd_opt2 : hd_opt [1] = Some 1.
- (* FILL IN HERE *) Admitted.
+ simpl. reflexivity. Qed.
 
 Example test_hd_opt3 : hd_opt [5;6] = Some 5.
- (* FILL IN HERE *) Admitted.
+ simpl. reflexivity. Qed.
 (** [] *)
 
 (** **** Exercise: 1 star, optional (option_elim_hd)  *)
@@ -1104,9 +1173,13 @@ Example test_hd_opt3 : hd_opt [5;6] = Some 5.
 Theorem option_elim_hd : forall (l:natlist) (default:nat),
   hd default l = option_elim default (hd_opt l).
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
+  intros l default. 
+  induction l.
+  simpl.
+  reflexivity.
+  simpl.  
+  reflexivity.
+Qed.
 (* ###################################################### *)
 (** * Dictionaries *)
 
@@ -1153,8 +1226,11 @@ Fixpoint find (key : nat) (d : dictionary) : natoption :=
 Theorem dictionary_invariant1' : forall (d : dictionary) (k v: nat),
   (find k (insert k v d)) = Some v.
 Proof.
- (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros d k v.
+  simpl.
+  rewrite <- beq_nat_refl.
+  reflexivity.
+Qed.
 
 (** **** Exercise: 1 star (dictionary_invariant2)  *)
 (** Complete the following proof. *)
@@ -1162,10 +1238,11 @@ Proof.
 Theorem dictionary_invariant2' : forall (d : dictionary) (m n o: nat),
   beq_nat m n = false -> find m d = find m (insert n o d).
 Proof.
- (* FILL IN HERE *) Admitted.
-(** [] *)
-
-
+ intros d m n o H.
+ simpl.
+ rewrite -> H.
+ reflexivity.
+Qed.
 
 End Dictionary.
 
