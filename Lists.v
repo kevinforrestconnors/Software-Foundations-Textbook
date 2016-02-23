@@ -1042,15 +1042,14 @@ Proof.
     simpl. 
     reflexivity.
   Case "(n :: s) (n :: s)".
-    rewrite -> remove_assoc.    
     destruct n.
     SCase "n = 0".
       simpl.
-      induction l1' as [|h t].
-      simpl. reflexivity.
-      (*rewrite -> count_assoc.*)
-Admitted.
-      
+      apply ble_n_Sn.
+    SCase "n = S n'".
+      simpl.
+      apply IHl1'.
+Qed.  
 
 
 (** **** Exercise: 3 stars, optional (bag_count_sum)  *)  
