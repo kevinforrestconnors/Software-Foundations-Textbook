@@ -1043,9 +1043,7 @@ Proof. reflexivity. Qed.
 
 Theorem override_example : forall (b:bool),
   (override (constfun b) 3 true) 2 = b.
-Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+Proof. reflexivity. Qed.
 
 (** We'll use function overriding heavily in parts of the rest of the
     course, and we will end up needing to know quite a bit about its
@@ -1072,6 +1070,7 @@ Theorem unfold_example_bad : forall m n,
   plus3 n + 1 = m + 1.
 Proof.
   intros m n H.
+  
 (* At this point, we'd like to do [rewrite -> H], since 
      [plus3 n] is definitionally equal to [3 + n].  However, 
      Coq doesn't automatically expand [plus3 n] to its 
@@ -1111,9 +1110,12 @@ Theorem override_neq : forall (X:Type) x1 x2 k1 k2 (f : nat->X),
   beq_nat k2 k1 = false ->
   (override f k2 x2) k1 = x1.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
+  intros.
+  unfold override.
+  rewrite -> H0.
+  rewrite -> H.
+  reflexivity.
+Qed.
 (** As the inverse of [unfold], Coq also provides a tactic
     [fold], which can be used to "unexpand" a definition.  It is used
     much less often. *)
