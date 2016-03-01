@@ -320,22 +320,28 @@ Qed.
 (** **** Exercise: 2 stars, optional (practice)  *)
 (** A couple more nontrivial but not-too-complicated proofs to work
     together in class, or for you to work as exercises. *)
-(**
+
 Theorem beq_nat_0_l : forall n,
    beq_nat 0 n = true -> n = 0.
 Proof.
  intros.
- apply 
- )
+ induction n.
+ reflexivity.
+ simpl in H.
+ inversion H.
+Qed.
 
 Theorem beq_nat_0_r : forall n,
    beq_nat n 0 = true -> n = 0.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros.
+  induction n.
+  reflexivity.
+  simpl in H.
+  inversion H.
+Qed.
 
-
-(* ###################################################### *)
+ (* ###################################################### *)
 (** * Using Tactics on Hypotheses *)
 
 (** By default, most tactics work on the goal formula and leave
